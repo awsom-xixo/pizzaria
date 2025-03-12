@@ -33,15 +33,7 @@ class Menu:
         self.janelinha = CTkFrame(master=self.app_menu, width=500, height=300, border_width=1)
         self.janelinha.place(relx=0.5, rely=0.02, anchor='n')
 
-        self.botao_tema = CTkSwitch(
-            master=self.janelinha, 
-            text="Modo Escuro", 
-            command=self.alternar_tema,
-            variable=self.tema_atual, 
-            onvalue="dark", 
-            offvalue="light",
-            fg_color='#3E3E3E', 
-            border_width=0
+        self.botao_tema = CTkSwitch(master=self.janelinha, text="Modo Escuro", command=self.alternar_tema,variable=self.tema_atual, onvalue="dark", offvalue="light",fg_color='#3E3E3E', border_width=0
         )
         self.botao_tema.place(relx=0.01, rely=0.06, anchor='w')
 
@@ -54,13 +46,7 @@ class Menu:
         self.nome.place(relx=0.5, rely=0.01, anchor='n')
 
         if not logado:
-            self.botao_login = CTkButton(
-                master=self.janelinha, 
-                text="Login", 
-                command=self.entrar, 
-                width=15, 
-                height=10, 
-                corner_radius=75
+            self.botao_login = CTkButton(master=self.janelinha, text="Login", command=self.entrar, width=15, height=10, corner_radius=75
             )
             self.botao_login.place(relx=0.9, rely=0.10)
         else:
@@ -69,23 +55,11 @@ class Menu:
 
             # Verifica se o usuário logado é um dono e exibe o botão do admin
             if usuario_logado in [dono['usuario'] for dono in donos]:
-                self.botao_admin = CTkButton(
-                    master=self.janelinha, 
-                    text="Painel do Admin", 
-                    command=self.abrir_admin,  # Função que abre o painel de admin
-                    width=30, 
-                    height=20, 
-                    corner_radius=75
+                self.botao_admin = CTkButton(master=self.janelinha, text="Painel do Admin", command=self.abrir_admin,  # Função que abre o painel de adminwidth=30, height=20, corner_radius=75
                 )
                 self.botao_admin.place(relx=0.5, rely=0.7, anchor='n')
 
-            self.botao_login = CTkButton(
-                master=self.janelinha, 
-                text="Ir para o Pedido",  
-                command=self.ir_para_pedido, 
-                width=30, 
-                height=20, 
-                corner_radius=75
+            self.botao_login = CTkButton(master=self.janelinha, text="Ir para o Pedido",  command=self.ir_para_pedido, width=30, height=20, corner_radius=75
             )
             self.botao_login.place(relx=0.5, rely=0.5, anchor='n')
 

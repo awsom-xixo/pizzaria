@@ -11,7 +11,7 @@ class FrameDeTamanhos(ctk.CTkFrame):
         super().__init__(app)
         self.app = app
         self.titulo = titulo
-        self.tamanhos = tamanhos_dict  # Use o dicionário inteiro, não uma lista
+        self.tamanhos = tamanhos_dict
         self.valores = list(tamanhos_dict.values())  # Obtém os limites de sabores
         self.tamanho = ctk.IntVar(value=-1)
         self.max_sabores = 0  # Variável para armazenar o número máximo de sabores permitido
