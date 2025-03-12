@@ -6,6 +6,32 @@ from tkinter import messagebox
 with open("config.json", "r", encoding="utf-8") as file:
     config = json.load(file)
 
+
+
+class Carrinho:
+    def __init__(self):
+        self.itens = []
+    
+    def adicionar_item(self, item):
+        self.itens.append(item)
+    
+    def exibir_itens(self):
+        return "\n".join(self.itens) if self.itens else "Carrinho vazio."
+    
+    def limpar(self):
+        self.itens.clear()
+    
+    def confirmar_compra(self):
+        if not self.itens:
+            messagebox.showinfo("Carrinho", "O carrinho está vazio!")
+            return
+        messagebox.showinfo("Compra Confirmada", "Seu pedido foi finalizado com sucesso!")
+        self.limpar()
+
+carrinho = Carrinho()
+
+
+
 class FrameDeTamanhos(ctk.CTkFrame):
     def __init__(self, app, titulo, tamanhos_dict):
         super().__init__(app)
@@ -42,6 +68,8 @@ class FrameDeTamanhos(ctk.CTkFrame):
             return False
         return True
 
+
+
 class FrameDeSabores(ctk.CTkFrame):
     def __init__(self, app, titulo, sabores):
         super().__init__(app)
@@ -67,13 +95,18 @@ class FrameDeSabores(ctk.CTkFrame):
             # Excedeu o limite, desmarcar todos os sabores e mostrar aviso
             for var in self.vars.values():
                 var.set(0)
-            messagebox.showwarning("Limite Excedido", f"Você não pode escolher mais do que {max_sabores} sabores para este tamanho de pizza.")
+            if max_sabores == 0:
+                messagebox.showwarning("Limite Excedido", f"Você deve escolher um tamanho de pizza primeiro antes de selecionar um sabor.")
+            else:
+                messagebox.showwarning("Limite Excedido", f"Você não pode escolher mais do que {max_sabores} sabores para este tamanho de pizza.")
         
         # Atualiza o valor total ao vivo
         self.app.atualizarPreco_total()
 
     def verificarSaboresMarcados(self):
         return any(var.get() == 1 for var in self.vars.values())
+
+
 
 class FrameDeAdicionais(ctk.CTkFrame):
     def __init__(self, app, titulo, adicionais):
@@ -93,19 +126,16 @@ class FrameDeAdicionais(ctk.CTkFrame):
             combobox.grid(row=i, column=1, padx=10, pady=5, sticky='we')
             self.comboboxes[adicional] = combobox
 
+
+
 class App(ctk.CTk):
     def __init__(self):
         super().__init__()
         self.title('Menu')
         self.geometry('800x500')
+        
         self.total_label = ctk.CTkLabel(self, text='Total: R$0.00', font=("Arial", 14))
         self.total_label.grid(row=4, column=0, columnspan=4, padx=10, pady=5, sticky="sew")
-
-        label1 = ctk.CTkLabel(self, text='Escolha como deseja que seu pedido seja realizado!', font=("Arial", 16))
-        label2 = ctk.CTkLabel(self, text='Após escolher o tamanho, sabores e adicionais, clique no botão abaixo para confirmar seu pedido.', font=("Arial", 14))
-        
-        label1.grid(row=0, column=0, columnspan=4, padx=10, pady=10, sticky="sew")
-        label2.grid(row=1, column=0, columnspan=4, padx=10, pady=5, sticky="sew")
         
         self.frame_de_tamanhos = FrameDeTamanhos(self, tamanhos_dict=config["tamanhos"], titulo='Escolha o tamanho da pizza:')
         self.frame_de_tamanhos.grid(row=2, column=0, padx=10, pady=10, sticky="nsew")
@@ -116,26 +146,48 @@ class App(ctk.CTk):
         self.frame_de_adicionais = FrameDeAdicionais(self, titulo='Escolha seus adicionais', adicionais=config["adicionais"])
         self.frame_de_adicionais.grid(row=2, column=2, padx=10, pady=10, sticky="nsew")
         
-        self.botao_confirmar = ctk.CTkButton(self, text='Confirmar', command=self.confirmar_escolhas)
-        self.botao_confirmar.grid(row=3, column=0, columnspan=4, padx=10, pady=10, sticky="sew")
-
-    def limitarSabores(self, max_sabores):
-        # Limita a escolha de sabores baseado no tamanho da pizza
-        self.frame_de_sabores.verificarLimiteSabores()
-
-    def atualizarPreco_total(self, event=None):
+        self.botao_confirmar = ctk.CTkButton(self, text='Adicionar ao Carrinho', command=self.adicionar_ao_carrinho)
+        self.botao_confirmar.grid(row=3, column=0, columnspan=2, padx=10, pady=10, sticky="sew")
+        
+        self.botao_ver_carrinho = ctk.CTkButton(self, text='Ver Carrinho', command=self.ver_carrinho)
+        self.botao_ver_carrinho.grid(row=3, column=2, padx=10, pady=10, sticky="sew")
+        
+        self.botao_limpar_carrinho = ctk.CTkButton(self, text='Limpar Carrinho', command=self.limpar_carrinho)
+        self.botao_limpar_carrinho.grid(row=5, column=0, padx=10, pady=10, sticky="sew")
+        
+        self.botao_confirmar_compra = ctk.CTkButton(self, text='Confirmar Compra', command=self.confirmar_compra)
+        self.botao_confirmar_compra.grid(row=5, column=2, padx=10, pady=10, sticky="sew")
+    
+    def atualizarPreco_total(self):
         total = sum(valor for sabor, valor in self.frame_de_sabores.sabores.items() if self.frame_de_sabores.vars[sabor].get())
         total += sum(int(self.frame_de_adicionais.comboboxes[adicional].get()) * valor for adicional, valor in self.frame_de_adicionais.adicionais.items())
         self.total_label.configure(text=f'Total: R${total:.2f}')
     
-    def confirmar_escolhas(self):
+    def adicionar_ao_carrinho(self):
         if not self.frame_de_tamanhos.confirmarEscolha():
             return
         
         if not self.frame_de_sabores.verificarSaboresMarcados():
             messagebox.showerror('ERRO', 'É obrigatório escolher pelo menos um sabor.')
             return
-
-        self.destroy()
+        
+        tamanho = list(config["tamanhos"].keys())[self.frame_de_tamanhos.tamanho.get()]
+        sabores = [sabor for sabor, var in self.frame_de_sabores.vars.items() if var.get()]
+        adicionais = {adicional: int(self.frame_de_adicionais.comboboxes[adicional].get()) for adicional in config["adicionais"] if int(self.frame_de_adicionais.comboboxes[adicional].get()) > 0}
+        total = float(self.total_label.cget("text").split('R$')[-1])
+        
+        pedido = f"{tamanho} - Sabores: {', '.join(sabores)} - Adicionais: {adicionais} - Total: R${total:.2f}"
+        carrinho.adicionar_item(pedido)
+        messagebox.showinfo("Sucesso", "Pedido adicionado ao carrinho!")
+    
+    def ver_carrinho(self):
+        messagebox.showinfo("Carrinho", carrinho.exibir_itens())
+    
+    def limpar_carrinho(self):
+        carrinho.limpar()
+        messagebox.showinfo("Carrinho", "Carrinho esvaziado com sucesso!")
+    
+    def confirmar_compra(self):
+        carrinho.confirmar_compra()
 
 ctk.set_appearance_mode('dark')

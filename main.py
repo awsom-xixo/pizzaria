@@ -1,5 +1,4 @@
 from customtkinter import *  # Biblioteca tkinter melhorada
-import tkinter as tk
 from tkinter import messagebox
 from menu import App
 from admin import AdminWindow, carregar_config

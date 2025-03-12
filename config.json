@@ -4,10 +4,10 @@
         "Pequena": 3,
         "Média": 4,
         "Grande": 5,
-        "Avestruz": 6
+        "Avestruz": 6,
     },
     "sabores": {
-        "Mokele Mbembe": 12.000,
+        "Mokele Mbembe": 12.0,
         "PROMOÇÃO Gremio": 2,
         "Montanhas Nevadas": 2.274,
         "Estrela de neutrons": 250,
@@ -16,7 +16,7 @@
         "Vegetação da amazonia": 548,
         "Pedra sedimentar": 15,
         "Espanha": 411,
-        "Jalapão": 3.221
+        "Jalapão": 3.221,
     },
     "adicionais": {
         "Coca-Cola 2L": 10,
@@ -26,6 +26,6 @@
         "Água Mineral 500ml": 3,
         "Batata Frita": 12,
         "Onion Rings": 10,
-        "Bacon": 6
+        "Bacon": 6,
     }
 }
