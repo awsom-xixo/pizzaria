@@ -132,7 +132,7 @@ class App(ctk.CTk):
     def __init__(self):
         super().__init__()
         self.title('Menu')
-        self.geometry('800x500')
+        self.geometry('900x600')
         
         self.total_label = ctk.CTkLabel(self, text='Total: R$0.00', font=("Arial", 14))
         self.total_label.grid(row=4, column=0, columnspan=4, padx=10, pady=5, sticky="sew")
