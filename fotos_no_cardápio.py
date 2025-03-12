@@ -111,7 +111,7 @@ class Menu:
     def carregar_imagem(self, nome_arquivo):
         """Carrega e retorna uma imagem redimensionada."""
         try:
-            caminho_imagem = os.path.join("C:/Users/micael_junco/Documents/GitHub/pizzaria-senai/pizzaria/img/", nome_arquivo)
+            caminho_imagem = os.path.join("img/", nome_arquivo)
             img = Image.open(caminho_imagem)
             img = img.resize((150, 150))
 
